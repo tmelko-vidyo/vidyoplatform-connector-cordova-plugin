@@ -28,10 +28,10 @@ Here we demontrate how to create a sample Cordova project and import the VidyoPl
       $ cordova platform add android
       $ cordova platform add ios
     
-### Add VidyoClient SDK
-    1. Download and unzip Android & iOS https://developer.vidyo.io/#/packages
-    2. Copy /VidyoClient-AndroidSDK/lib/android content to /vidyoplatform-connector-cordova-plugin/src/android/lib/
-    3. Copy /VidyoClient-iOSSDK/lib/ios/VidyoClientIOS.framework to /vidyoplatform-connector-cordova-plugin/src/ios
+### Add VidyoClient SDK   
+1. Download and unzip Android & iOS https://developer.vidyo.io/#/packages
+2. Copy /VidyoClient-AndroidSDK/lib/android content to /vidyoplatform-connector-cordova-plugin/src/android/lib/
+3. Copy /VidyoClient-iOSSDK/lib/ios/VidyoClientIOS.framework to /vidyoplatform-connector-cordova-plugin/src/ios
 
 ### Now add the previously built VidyoPlugin to this project
       $ cordova plugin add <plugin-path>  
