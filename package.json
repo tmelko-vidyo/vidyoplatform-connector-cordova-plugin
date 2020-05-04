@@ -1,0 +1,27 @@
+{
+  "name": "com.vidyo.plugin",
+  "version": "0.0.1",
+  "description": "VidyoPlatform connector Cordova sample plugin",
+  "cordova": {
+    "id": "com.vidyo.plugin",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmelko-vidyo/vidyoplatform-connector-cordova-plugin.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "Vidyo Inc.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmelko-vidyo/vidyoplatform-connector-cordova-plugin/issues"
+  },
+  "homepage": "https://github.com/tmelko-vidyo/vidyoplatform-connector-cordova-plugin#readme"
+}
