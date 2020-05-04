@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -206,7 +207,7 @@
                                             <outlet property="delegate" destination="p7h-FM-xH7" id="6QS-hp-q7S"/>
                                         </connections>
                                     </textField>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="vidyo_io_vertical_dark_at_2x.png" translatesAutoresizingMaskIntoConstraints="NO" id="iYm-Tj-1t2">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="vidyo_icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="iYm-Tj-1t2">
                                         <rect key="frame" x="85.333333333333343" y="0.0" width="129" height="129"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="iYm-Tj-1t2" secondAttribute="height" multiplier="1:1" id="yGH-6H-Eua"/>
@@ -341,13 +342,13 @@
                         <outlet property="closeButton" destination="lje-2Y-gHf" id="h3z-mh-tvA"/>
                         <outlet property="connectionSpinner" destination="O2f-if-TMs" id="tmF-R5-1fk"/>
                         <outlet property="controlsView" destination="GF2-gO-SgH" id="v9R-dW-FHH"/>
-                        <outlet property="displayName" destination="KBg-pZ-O1Y" id="Wpd-4h-02D"/>
-                        <outlet property="host" destination="ipe-rU-tT9" id="XIp-uI-q2h"/>
+                        <outlet property="displayName" destination="KBg-pZ-O1Y" id="0wN-Ia-LMn"/>
                         <outlet property="microphonePrivacyButton" destination="Sdb-sb-tii" id="Ox1-As-2Nx"/>
-                        <outlet property="resourceId" destination="h5D-fU-ljb" id="ELI-r6-Pcq"/>
+                        <outlet property="pin" destination="h5D-fU-ljb" id="Kta-CY-5XY"/>
+                        <outlet property="portal" destination="ipe-rU-tT9" id="fb6-lg-5Md"/>
+                        <outlet property="roomKey" destination="age-6h-v1n" id="kne-P5-nWS"/>
                         <outlet property="toggleConnectButton" destination="hIn-nK-t98" id="5Ue-VU-2Nu"/>
                         <outlet property="toggleToolbarView" destination="0T2-i5-9MJ" id="A3k-fB-Ddf"/>
-                        <outlet property="token" destination="age-6h-v1n" id="1RM-LT-kUN"/>
                         <outlet property="toolbarStatusText" destination="6Yf-mZ-fn3" id="3GP-ua-aIX"/>
                         <outlet property="toolbarView" destination="W89-3c-cwE" id="G01-EB-HC0"/>
                         <outlet property="videoView" destination="Lgj-fJ-oKy" id="eqQ-kw-FpS"/>
@@ -369,6 +370,6 @@
         <image name="cameraonwhite.png" width="256" height="256"/>
         <image name="close.png" width="256" height="256"/>
         <image name="microphoneonwhite.png" width="256" height="256"/>
-        <image name="vidyo_io_vertical_dark_at_2x.png" width="576" height="576"/>
+        <image name="vidyo_icon.png" width="180" height="180"/>
     </resources>
 </document>
