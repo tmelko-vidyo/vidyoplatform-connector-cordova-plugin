@@ -84,6 +84,11 @@
     if (self.vidyoViewController == nil) {
         self.vidyoViewController = [[VidyoViewController alloc] init];
     }
+
+    /* disable slide donw */
+    if (@available(iOS 13.0, *)) {
+        self.vidyoViewController.modalInPresentation = TRUE;
+    }
     
     self.vidyoViewController.plugin = self;
     
