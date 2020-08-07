@@ -73,7 +73,17 @@
 		<framework src="org.greenrobot:eventbus:3.1.1" />
 	</platform>
 
+	<!-- https://github.com/blakgeek/cordova-plugin-cocoapods-support -->
+    <dependency id="cordova-plugin-cocoapod-support"/>
+    
 	<platform name="ios">
+        <pods-config ios-min-version="9.0" use-frameworks="true">
+            <source url="https://tmelko-gl-vidyo@bitbucket.org/tmelko-gl-vidyo/vidyoclient-ios-spec.git"/>
+        </pods-config>
+
+        <!-- It's taking latest version on repo -->
+        <!-- spec="~> 19.3.1.6" -->
+        <pod name="VidyoIOClient"/>
 
 		<config-file target="config.xml" parent="/*">
 			<feature name="VidyoPlugin">
@@ -116,10 +126,7 @@
 		<framework src="CoreMedia.framework"/>
 		<framework src="SystemConfiguration.framework"/>
 		<framework src="UIKit.framework"/>
-
-		<!-- Should be placed ahead -->
-		<framework src="src/ios/VidyoClientIOS.framework" custom="true"  />
-
+        
 		<header-file src="src/ios/vidyoconnector/Logger.h" />
         <source-file src="src/ios/vidyoconnector/Logger.m" />
 		<header-file src="src/ios/vidyoconnector/VidyoViewController.h" />

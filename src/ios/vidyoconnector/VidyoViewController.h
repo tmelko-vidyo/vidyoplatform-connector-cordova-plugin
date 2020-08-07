@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <VidyoClientIOS/Lmi/VidyoClient/VidyoConnector_Objc.h>
+#import <Lmi/VidyoClient/VidyoConnector_Objc.h>
 #import "VidyoPlugin.h"
 #import "Logger.h"
 
