@@ -1,310 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/videoFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:id="@+id/videoFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/toggleToolbarFrame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:onClick="ToggleToolbarVisibility"
-            android:visibility="gone" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/toolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp">
+            android:orientation="horizontal">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+            <ToggleButton
+                android:id="@+id/toggleConnectButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/toggle_connect"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
 
-                <LinearLayout
-                    android:id="@+id/controlsLayout"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.9"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="5dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp">
+            <ToggleButton
+                android:id="@+id/cameraSwitch"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/camera_switch"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:paddingBottom="0dp"
-                        android:src="@drawable/vidyo_icon" />
+            <ToggleButton
+                android:id="@+id/cameraPrivacyButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/toggle_camera_privacy"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/button_material_light" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:width="110dp"
-                            android:gravity="end"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="Host"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/portal_uri"
-                            android:layout_width="match_parent"
-                            android:layout_height="25dp"
-                            android:background="@android:color/transparent"
-                            android:elegantTextHeight="true"
-                            android:enabled="true"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:hint="*.vidyocloud.com"
-                            android:inputType="text"
-                            android:paddingStart="5dp"
-                            android:paddingTop="0dp"
-                            android:paddingEnd="5dp"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/button_material_light" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:width="110dp"
-                            android:gravity="end"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="Token"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/room_key"
-                            android:layout_width="match_parent"
-                            android:layout_height="25dp"
-                            android:background="@android:color/transparent"
-                            android:elegantTextHeight="true"
-                            android:enabled="true"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:hint="required"
-                            android:inputType="text"
-                            android:paddingStart="5dp"
-                            android:paddingTop="0dp"
-                            android:paddingEnd="5dp"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/button_material_light" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:width="110dp"
-                            android:gravity="end"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="Display Name"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/display_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="25dp"
-                            android:background="@android:color/transparent"
-                            android:elegantTextHeight="true"
-                            android:enabled="true"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:hint="your name"
-                            android:inputType="text"
-                            android:paddingStart="5dp"
-                            android:paddingTop="0dp"
-                            android:paddingEnd="5dp"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/button_material_light" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:width="110dp"
-                            android:gravity="end"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="Resource ID"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/pin"
-                            android:layout_width="match_parent"
-                            android:layout_height="25dp"
-                            android:background="@android:color/transparent"
-                            android:elegantTextHeight="true"
-                            android:enabled="true"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            android:hint="optional"
-                            android:inputType="text"
-                            android:paddingStart="5dp"
-                            android:paddingTop="0dp"
-                            android:paddingEnd="5dp"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/button_material_light" />
-
-                    <ProgressBar
-                        android:id="@+id/connectionSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center"
-                        android:visibility="invisible" />
-                </LinearLayout>
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/toolbarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ToggleButton
-                    android:id="@+id/toggleConnectButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@drawable/toggle_connect"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:onClick="ToggleConnectButtonPressed"
-                    android:textOff=""
-                    android:textOn="" />
-
-                <ToggleButton
-                    android:id="@+id/cameraSwitch"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@drawable/camera_switch"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:onClick="CameraSwapButtonPressed"
-                    android:textOff=""
-                    android:textOn="" />
-
-                <ToggleButton
-                    android:id="@+id/cameraPrivacyButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@drawable/toggle_camera_privacy"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:onClick="CameraPrivacyButtonPressed"
-                    android:textOff=""
-                    android:textOn="" />
-
-                <ToggleButton
-                    android:id="@+id/microphonePrivacyButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginTop="0dp"
-                    android:background="@drawable/toggle_mic_privacy"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:onClick="MicrophonePrivacyButtonPressed"
-                    android:textOff=""
-                    android:textOn="" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/toolbarStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:gravity="center_horizontal|bottom"
-                android:maxLines="1"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:shadowColor="#0d0d0d"
-                android:shadowDx="-3.0"
-                android:shadowDy="-3.0"
-                android:shadowRadius="2.0"
-                android:text="Ready"
-                android:textColor="#f1f1f1" />
+            <ToggleButton
+                android:id="@+id/microphonePrivacyButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/toggle_mic_privacy"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
         </LinearLayout>
-    </RelativeLayout>
-</RelativeLayout>
+
+        <TextView
+            android:id="@+id/toolbarStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="Ready"
+            android:textColor="#f1f1f1" />
+    </LinearLayout>
+</FrameLayout>

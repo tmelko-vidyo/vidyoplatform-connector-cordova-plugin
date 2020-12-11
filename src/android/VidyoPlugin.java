@@ -4,10 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.vidyo.vidyoconnector.EventAction;
+import com.vidyo.vidyoconnector.Logger;
 import com.vidyo.vidyoconnector.TriggerAction;
 import com.vidyo.vidyoconnector.VidyoActivity;
 
@@ -27,14 +27,11 @@ import org.json.JSONException;
  */
 public class VidyoPlugin extends CordovaPlugin {
 
-    private static final String TAG = "VidyoPlugin";
-
     private static final int PERMISSION_REQ_CODE = 0x7b;
 
     private static final String[] PERMISSIONS = new String[]{
             Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.RECORD_AUDIO
     };
 
     private JSONArray connectArguments;
@@ -47,7 +44,7 @@ public class VidyoPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        Log.i(TAG, "Received action from JS layer: " + action);
+        Logger.i("Received action from JS layer: " + action);
 
         switch (action) {
             case "connect":
@@ -99,9 +96,6 @@ public class VidyoPlugin extends CordovaPlugin {
         intent.putExtra("roomKey", args.getString(1));
         intent.putExtra("displayName", args.getString(2));
         intent.putExtra("pin", args.getString(3));
-        
-        intent.putExtra("hideConfig", true);
-        intent.putExtra("autoJoin", true);
 
         this.cordova.getActivity().startActivity(intent);
     }
@@ -113,12 +107,12 @@ public class VidyoPlugin extends CordovaPlugin {
             result.setKeepCallback(true);
             pluginCallback.sendPluginResult(result);
 
-            Log.i(TAG, "Event reported: " + eventAction.getJsonBody());
+            Logger.i("Event reported: " + eventAction.getJsonBody());
         } else {
-            Log.e(TAG, "JS callback context is null.");
+            Logger.e("JS callback context is null.");
         }
     }
-    
+
     @Override
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
         if (requestCode == PERMISSION_REQ_CODE) {
