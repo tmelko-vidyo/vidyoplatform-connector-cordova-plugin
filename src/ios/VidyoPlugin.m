@@ -31,12 +31,17 @@
 }
 
 - (void)passConnectEvent:(NSString*)event reason: (NSString*)reason  {
-    NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys: event, @"event", reason, @"reason", nil];
+    NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys: event, @"event", reason, @"value", nil];
     [self reportEvent: payload];
 }
 
 - (void)passDeviceStateEvent:(NSString*)event muted: (NSString*)muted  {
-    NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys: event, @"event", muted, @"muted", nil];
+    NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys: event, @"event", muted, @"state", nil];
+    [self reportEvent: payload];
+}
+
+- (void)passParticipantEvent:(NSString*)event participant: (NSString*)participant  {
+    NSDictionary *payload = [NSDictionary dictionaryWithObjectsAndKeys: event, @"event", participant, @"participant", nil];
     [self reportEvent: payload];
 }
 
@@ -57,6 +62,9 @@
     NSString* displayName = [command.arguments objectAtIndex:2];
     NSString* pin = [command.arguments objectAtIndex:3];
     
+    NSNumber* maxParticipants = [command.arguments objectAtIndex:4];
+    NSString* logLevel = [command.arguments objectAtIndex:5];
+
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
     
     if (portal != nil) {
@@ -73,6 +81,12 @@
     
     if (pin != nil) {
         [standardUserDefaults setObject:pin forKey:@"pin"];
+    }
+    
+    [standardUserDefaults setInteger:[maxParticipants intValue] forKey: @"participants"];
+    
+    if (logLevel != nil) {
+        [standardUserDefaults setObject:logLevel forKey:@"logLevel"];
     }
     
     [standardUserDefaults setBool:YES forKey:@"autoJoin"];
@@ -104,6 +118,29 @@
 - (void)release:(CDVInvokedUrlCommand *)command {
     if (self.vidyoViewController != nil) {
         [self.vidyoViewController close];
+    }
+}
+
+- (void)setPrivacy:(CDVInvokedUrlCommand *)command {
+    NSString* device = [command.arguments objectAtIndex:0];
+    BOOL privacy = [command.arguments objectAtIndex:1];
+    
+    if (self.vidyoViewController != nil) {
+        [self.vidyoViewController setPrivacy:device Privacy:privacy];
+    }
+}
+
+- (void)selectDefaultDevice:(CDVInvokedUrlCommand *)command {
+    NSString* device = [command.arguments objectAtIndex:0];
+
+    if (self.vidyoViewController != nil) {
+        [self.vidyoViewController selectDefaultDevice:device];
+    }
+}
+
+- (void)cycleCamera:(CDVInvokedUrlCommand *)command {
+    if (self.vidyoViewController != nil) {
+        [self.vidyoViewController cycleCamera];
     }
 }
 

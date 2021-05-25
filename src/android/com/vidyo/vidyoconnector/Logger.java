@@ -74,6 +74,9 @@ public class Logger {
 
         if (ENABLED) {
             switch (logType) {
+                case DEBUG:
+                    Log.d(TAG, data);
+                    break;
                 case ERROR:
                     Log.e(TAG, data);
                     break;
@@ -128,7 +131,7 @@ public class Logger {
 
         return logFile.getAbsolutePath();
     }
-    
+
     private static void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles())

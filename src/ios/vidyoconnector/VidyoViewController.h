@@ -18,7 +18,7 @@ enum VIDYO_CONNECTOR_STATE {
     VC_CONNECTION_FAILURE
 };
 
-@interface VidyoViewController : UIViewController <UITextFieldDelegate, VCConnectorIConnect, VCConnectorIRegisterLocalCameraEventListener, VCConnectorIRegisterLogEventListener> {
+@interface VidyoViewController : UIViewController <UITextFieldDelegate, VCConnectorIConnect, VCConnectorIRegisterLocalCameraEventListener, VCConnectorIRegisterLogEventListener, VCConnectorIRegisterParticipantEventListener> {
 @private
     VCConnector *vc;
     VCLocalCamera *lastSelectedCamera;
@@ -31,7 +31,6 @@ enum VIDYO_CONNECTOR_STATE {
     BOOL      hideConfig;
     BOOL      autoJoin;
     BOOL      allowReconnect;
-    BOOL      enableDebug;
     NSString  *returnURL;
     enum VIDYO_CONNECTOR_STATE vidyoConnectorState;
     CGFloat   keyboardOffset;
@@ -68,8 +67,11 @@ enum VIDYO_CONNECTOR_STATE {
 - (IBAction)toggleToolbar:(UITapGestureRecognizer *)sender;
 
 /* Open for plugin extension */
+- (void) setPrivacy:(NSString*)device Privacy:(BOOL)privacy;
+- (void) selectDefaultDevice:(NSString*)device;
+- (void) cycleCamera;
 - (void) disconnect;
 - (void) close;
-    
+
 @end
 #endif // VIDYOVIEWCONTROLLER_H_INCLUDED

@@ -30,6 +30,13 @@ VidyoPlugin.prototype.setCallback = function(callback) {
 
 /**
  * Launch conference activity and pass the callbacks
+ * Arguments:
+ * 0: Portal
+ * 1: Room Key
+ * 2: Display Name
+ * 3: Pin
+ * 4: Max Participants
+ * 5: Log Level
  */
 VidyoPlugin.prototype.connect = function(args) {
     exec(nativeResponseCallback, nativeErrorCallback, "VidyoPlugin", "connect", args);
@@ -49,6 +56,33 @@ VidyoPlugin.prototype.disconnect = function() {
 VidyoPlugin.prototype.release = function() {
     console.log("Trigger release on native side.");
     exec(function(){}, nativeErrorCallback, "VidyoPlugin", "release", null);
+}
+
+/*
+ * Manage camera|mic|speaker privacy from JS layer
+ * Call it:
+ * VidyoPlugin.setPrivacy(["camera | mic | speaker", true | false]);
+ */
+VidyoPlugin.prototype.setPrivacy = function(args) {
+    exec(function(){}, nativeErrorCallback, "VidyoPlugin", "setPrivacy", args);
+}
+
+/*
+ * Select default camera|mic|speaker device from JS layer
+ * Call it:
+ * VidyoPlugin.selectDefaultDevice(["camera | mic | speaker"]);
+ */
+VidyoPlugin.prototype.selectDefaultDevice = function(args) {
+    exec(function(){}, nativeErrorCallback, "VidyoPlugin", "selectDefaultDevice", args);
+}
+
+/*
+ * Cycle camera from JS layer
+ * Call it:
+ * VidyoPlugin.cycleCamera();
+ */
+VidyoPlugin.prototype.cycleCamera = function(args) {
+    exec(function(){}, nativeErrorCallback, "VidyoPlugin", "cycleCamera", null);
 }
 
 module.exports = new VidyoPlugin();

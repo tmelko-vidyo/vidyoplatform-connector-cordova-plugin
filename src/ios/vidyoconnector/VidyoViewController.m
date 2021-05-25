@@ -66,8 +66,7 @@
     
     hideConfig          = [[standardUserDefaults stringForKey:@"hideConfig"]  isEqualToString:@"1"];
     autoJoin            = [[standardUserDefaults stringForKey:@"autoJoin"]    isEqualToString:@"1"];
-    enableDebug         = [[standardUserDefaults stringForKey:@"enableDebug"] isEqualToString:@"1"];
-    
+
     allowReconnect      = YES;
     returnURL           = NULL;
     experimentalOptions = NULL;
@@ -77,20 +76,20 @@
     // Initialize VidyoConnector
     [VCConnectorPkg vcInitialize];
     
+    unsigned int maxParticipants = (unsigned int)[standardUserDefaults integerForKey: @"participants"];
+    const char *logLevel = [[standardUserDefaults stringForKey: @"logLevel"] UTF8String];
+    
+    NSLog(@"Handle connection request with: %u participants and logLevel: %s", maxParticipants, logLevel);
+
     // Construct the VidyoConnector
     vc = [[VCConnector alloc] init:(void*)&videoView
                          ViewStyle:VCConnectorViewStyleDefault
-                RemoteParticipants:15
-                     LogFileFilter:"info@VidyoClient info@VidyoConnector warning"
+                RemoteParticipants:maxParticipants
+                     LogFileFilter:logLevel
                        LogFileName:""
                           UserData:0];
     
     if (vc) {
-        
-        // If enableDebug is configured then enable debugging
-        if (enableDebug) {
-            [vc enableDebug:7776 LogFilter:"warning info@VidyoClient info@VidyoConnector"];
-        }
         // Set experimental options if any exist
         if (experimentalOptions) {
             [vc setAdvancedOptions:[experimentalOptions UTF8String]];
@@ -102,9 +101,17 @@
         }
         
         // Register for log callbacks
-        if (![vc registerLogEventListener:self Filter:"info@VidyoClient info@VidyoConnector warning"]) {
+        if (![vc registerLogEventListener:self Filter:logLevel]) {
             [logger Log:@"RegisterLogEventListener failed"];
         }
+        
+        // Register for participants callbacks
+        if (![vc registerParticipantEventListener:self]) {
+            [logger Log:@"registerParticipantEventListener failed"];
+        } else {
+            [vc reportLocalParticipantOnJoined: true];
+        }
+        
         // If configured to auto-join, then simulate a click of the toggle connect button
         if (autoJoin) {
             [self toggleConnectButtonPressed:nil];
@@ -176,6 +183,8 @@
     lastSelectedCamera = nil;
     
     [vc unregisterLocalCameraEventListener];
+    [vc unregisterLogEventListener];
+    [vc unregisterParticipantEventListener];
     
     [vc selectLocalCamera: nil];
     [vc selectLocalMicrophone: nil];
@@ -250,12 +259,13 @@
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
-    
+
+
 #pragma mark -
 #pragma mark Virtual Keyboad
-    
-    // The keyboard pops up for first time or switching from one text box to another.
-    // Only want to move the view up when keyboard is first shown.
+
+// The keyboard pops up for first time or switching from one text box to another.
+// Only want to move the view up when keyboard is first shown.
 -(void)keyboardWillShow:(NSNotification *)notification {
     // Animate the current view out of the way
     if (self.view.frame.origin.y >= 0) {
@@ -279,8 +289,8 @@
         }
     }
 }
-    
-    // The keyboard is about to be hidden so move the view down if it previously has been moved up.
+
+// The keyboard is about to be hidden so move the view down if it previously has been moved up.
 -(void)keyboardWillHide {
     if (self.view.frame.origin.y < 0) {
         [UIView beginAnimations:nil context:NULL];
@@ -295,11 +305,11 @@
     }
     [self RefreshUI];
 }
-    
+
 #pragma mark -
 #pragma mark Text Fields and Editing
-    
-    // User finished editing a text field; save in user defaults
+
+// User finished editing a text field; save in user defaults
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     // If no input parameters (app self started), then save text updates to user defaults
     if (textField == portal) {
@@ -312,29 +322,29 @@
         [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:@"pin"];
     }
 }
-    
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     return YES;
 }
-    
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [[self view] endEditing:YES];
 }
-    
+
 #pragma mark -
 #pragma mark App UI Updates
-    
-    // Refresh the UI
+
+// Refresh the UI
 - (void)RefreshUI {
     [logger Log:[NSString stringWithFormat:@"VidyoConnectorShowViewAt: x = %f, y = %f, w = %f, h = %f", videoView.frame.origin.x, videoView.frame.origin.y, videoView.frame.size.width, videoView.frame.size.height]];
     
     // Resize the VidyoConnector
     [vc showViewAt:&videoView X:0 Y:0 Width:videoView.frame.size.width Height:videoView.frame.size.height];
 }
-    
-    // The state of the VidyoConnector connection changed, reconfigure the UI.
-    // If connected, show the video in the entire window.
-    // If disconnected, show the video in the preview pane.
+
+// The state of the VidyoConnector connection changed, reconfigure the UI.
+// If connected, show the video in the entire window.
+// If disconnected, show the video in the preview pane.
 - (void)ConnectorStateUpdated:(enum VIDYO_CONNECTOR_STATE)state statusText:(NSString *)statusText {
     vidyoConnectorState = state;
     
@@ -404,16 +414,86 @@
         [vc disconnect];
     }
 }
+
+- (void) setPrivacy:(NSString*)device Privacy:(BOOL)privacy {
+    if ([device isEqualToString:@"camera"]) {
+        cameraPrivacy = privacy;
+        [self updateCameraIconUI];
+        [vc setCameraPrivacy: cameraPrivacy];
+    } else if ([device isEqualToString:@"mic"]) {
+        microphonePrivacy = privacy;
+        [self updateMicrophoneIconUI];
+        [vc setMicrophonePrivacy: microphonePrivacy];
+    } else if ([device isEqualToString:@"speaker"]) {
+        [vc setSpeakerPrivacy: privacy];
+    }
+}
+
+- (void) selectDefaultDevice:(NSString*)device {
+    if ([device isEqualToString:@"camera"]) {
+        [vc selectDefaultCamera];
+    } else if ([device isEqualToString:@"mic"]) {
+        [vc selectDefaultMicrophone];
+    } else if ([device isEqualToString:@"speaker"]) {
+        [vc selectDefaultSpeaker];
+    }
+}
+
+- (void) cycleCamera {
+    [vc cycleCamera];
+}
+
+- (void) updateCameraIconUI {
+    if (cameraPrivacy == NO) {
+        [cameraPrivacyButton setImage:[UIImage imageNamed:@"cameraonwhite.png"] forState:UIControlStateNormal];
+    } else {
+        [cameraPrivacyButton setImage:[UIImage imageNamed:@"camera_off.png"] forState:UIControlStateNormal];
+    }
+}
+
+- (void) updateMicrophoneIconUI {
+    if (microphonePrivacy == NO) {
+        [microphonePrivacyButton setImage:[UIImage imageNamed:@"microphoneonwhite.png"] forState:UIControlStateNormal];
+    } else {
+        [microphonePrivacyButton setImage:[UIImage imageNamed:@"microphoneoff.png"] forState:UIControlStateNormal];
+    }
+}
+
+- (NSString*) participantToJSON:(VCParticipant*)participant {
+    NSMutableDictionary *data = [NSMutableDictionary dictionaryWithObjectsAndKeys: [participant getUserId],  @"userId", nil];
+    [data setObject:[participant getName] forKey:@"name"];
+    [data setObject:[participant getId] forKey:@"id"];
     
+    [data setObject:[NSString stringWithFormat:@"%d", [participant isLocal]] forKey:@"isLocal"];
+    [data setObject:[NSString stringWithFormat:@"%d", [participant isRecording]] forKey:@"isRecording"];
+
+    [data setObject:[NSString stringWithFormat:@"%ld", [participant getTrust]] forKey:@"trust"];
+    [data setObject:[NSString stringWithFormat:@"%ld", [participant getApplicationType]] forKey:@"applicationType"];
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:&error];
+    NSString *jsonString;
+    
+    if (jsonData) {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    } else {
+        NSLog(@"Got an error: %@", error);
+        jsonString = @"error";
+    }
+    
+    NSLog(@"Participant data: %@", jsonString);
+    return jsonString;
+}
+
 #pragma mark -
 #pragma mark Button Event Handlers
-    
+
 - (IBAction)closeButtonPressed:(id)sender {
     [self close];
 }
-    // The Connect button was pressed.
-    // If not in a call, attempt to connect to the backend service.
-    // If in a call, disconnect.
+// The Connect button was pressed.
+// If not in a call, attempt to connect to the backend service.
+// If in a call, disconnect.
 - (IBAction)toggleConnectButtonPressed:(id)sender {
     
     // If the toggleConnectButton is the callEndImage, then either user is connected to a resource or is in the process
@@ -424,12 +504,12 @@
         [toolbarStatusText setText:@"Connecting..."];
         
         BOOL status = [vc connectToRoomAsGuest:
-              [[[portal text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-              DisplayName:[[[displayName text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-              RoomKey:[[[roomKey text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-              RoomPin:[[[pin text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-              ConnectorIConnect:self];
-
+                       [[[portal text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                   DisplayName:[[[displayName text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                       RoomKey:[[[roomKey text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                       RoomPin:[[[pin text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                             ConnectorIConnect:self];
+        
         if (status == NO) {
             [self ConnectorStateUpdated:VC_CONNECTION_FAILURE statusText:@"Connection failed"];
         } else {
@@ -443,55 +523,49 @@
     }
 }
 
-    // Toggle the microphone privacy
+// Toggle the microphone privacy
 - (IBAction)microphonePrivacyButtonPressed:(id)sender {
     microphonePrivacy = !microphonePrivacy;
-    if (microphonePrivacy == NO) {
-        [microphonePrivacyButton setImage:[UIImage imageNamed:@"microphoneonwhite.png"] forState:UIControlStateNormal];
-    } else {
-        [microphonePrivacyButton setImage:[UIImage imageNamed:@"microphoneoff.png"] forState:UIControlStateNormal];
-    }
+    
+    [self updateMicrophoneIconUI];
     [vc setMicrophonePrivacy:microphonePrivacy];
     
     [plugin passDeviceStateEvent:@"MicrophoneStateUpdated" muted:microphonePrivacy ? @"YES" : @"NO"];
 }
-    
-    // Toggle the camera privacy
+
+// Toggle the camera privacy
 - (IBAction)cameraPrivacyButtonPressed:(id)sender {
     cameraPrivacy = !cameraPrivacy;
-    if (cameraPrivacy == NO) {
-        [cameraPrivacyButton setImage:[UIImage imageNamed:@"cameraonwhite.png"] forState:UIControlStateNormal];
-    } else {
-        [cameraPrivacyButton setImage:[UIImage imageNamed:@"camera_off.png"] forState:UIControlStateNormal];
-    }
+    
+    [self updateCameraIconUI];
     [vc setCameraPrivacy:cameraPrivacy];
     
     [plugin passDeviceStateEvent:@"CameraStateUpdated" muted:cameraPrivacy ? @"YES" : @"NO"];
 }
-    
-    // Handle the camera swap button being pressed. Cycle the camera.
+
+// Handle the camera swap button being pressed. Cycle the camera.
 - (IBAction)cameraSwapButtonPressed:(id)sender {
     [vc cycleCamera];
 }
-    
+
 - (IBAction)toggleToolbar:(UITapGestureRecognizer *)sender {
     if (vidyoConnectorState == VC_CONNECTED) {
         toolbarView.hidden = !toolbarView.hidden;
     }
 }
-    
+
 #pragma mark -
 #pragma mark VidyoConnector Event Handlers
-    
-    //  Handle successful connection.
+
+//  Handle successful connection.
 -(void) onSuccess {
     [logger Log:@"Successfully connected."];
     [self ConnectorStateUpdated:VC_CONNECTED statusText:@"Connected"];
- 
+    
     [plugin passConnectEvent:@"Connected" reason: nil];
 }
-    
-    // Handle attempted connection failure.
+
+// Handle attempted connection failure.
 -(void) onFailure:(VCConnectorFailReason)reason {
     [logger Log:@"Connection attempt failed."];
     
@@ -501,8 +575,8 @@
     [plugin passConnectEvent:@"Failure" reason: @"Unknown"];
     [self close];
 }
-    
-    //  Handle an existing session being disconnected.
+
+//  Handle an existing session being disconnected.
 -(void) onDisconnected:(VCConnectorDisconnectReason)reason {
     NSString* reasonString = nil;
     
@@ -541,10 +615,25 @@
 -(void) onLocalCameraStateUpdated:(VCLocalCamera*)localCamera State:(VCDeviceState)state {
     [logger Log:[NSString stringWithFormat:@"onLocalCameraStateUpdated: name=%@ state=%ld", [localCamera getName], (long)state]];
 }
-    
-    // Handle a message being logged.
+
+// Handle a message being logged.
 -(void) onLog:(VCLogRecord*)logRecord {
     [logger LogClientLib:logRecord.message];
 }
-    
+
+// Implementation of VCConnectorIRegisterParticipantEventListener
+- (void)onParticipantJoined:(VCParticipant *)participant {
+    [plugin passParticipantEvent:@"ParticipantJoined" participant: [self participantToJSON:participant]];
+}
+
+- (void)onParticipantLeft:(VCParticipant *)participant {
+    [plugin passParticipantEvent:@"ParticipantLeft" participant: [self participantToJSON:participant]];
+}
+
+- (void)onDynamicParticipantChanged:(NSMutableArray *)participants {
+}
+
+- (void)onLoudestParticipantChanged:(VCParticipant *)participant AudioOnly:(BOOL)audioOnly {
+}
+
 @end
