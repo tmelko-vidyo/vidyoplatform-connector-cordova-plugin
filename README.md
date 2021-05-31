@@ -120,33 +120,52 @@ app.initialize();
 var onVidyoEvent = {
 
     onEvent: function(response) {
-        var event = response.event;
+      var event = response.event;
 
-        switch(response.event) {
-            case "Connected":
-                console.log("JS layer: connected to the conference");
-                break;
+      switch (event) {
+        case "Connected":
+          console.log("JS layer: connected to the conference");
+          break;
 
-            case "Disconnected":
-                var reason = response.reason;
-                console.log("JS layer: disconnected from the conference. Reason: " + reason);
-                break;
-            
-            case "Failure":
-                var reason = response.reason;
-                console.log("JS layer: Failure during connection. Reason: " + reason);
-                break; 
+        case "Disconnected":
+          let disconnectReason = response.value;
+          console.log(
+            "JS layer: disconnected from the conference. Reason: " +
+              disconnectReason
+          );
+          break;
 
-            case "CameraStateUpdated":
-                var muted = response.muted;
-                console.log("JS layer: Received camera state updated. Muted: " + muted);
-                break;
-                
-            case "MicrophoneStateUpdated":
-                var muted = response.muted;
-                console.log("JS layer: Received microphone state updated. Muted: " + muted);
-                break;
-        }
+        case "Failure":
+          let failureReason = response.value;
+          console.log(
+            "JS layer: Failure during connection. Reason: " + failureReason
+          );
+          break;
+
+        case "CameraStateUpdated":
+          let cameraState = response.state;
+          console.log(
+            "JS layer: Received camera state updated. Muted: " + cameraState
+          );
+          break;
+
+        case "MicrophoneStateUpdated":
+          let micState = response.state;
+          console.log(
+            "JS layer: Received microphone state updated. Muted: " + micState
+          );
+          break;
+
+        case "ParticipantJoined":
+          let joined = response.participant;
+          console.log("JS layer: Participant joined: " + joined);
+          break;
+
+        case "ParticipantLeft":
+          let left = response.participant;
+          console.log("JS layer: Participant left: " + left);
+          break;
+      }
     }
 }
 
@@ -159,7 +178,7 @@ function connect() {
     var displayName = document.getElementById("displayName").value;
     var pin = document.getElementById("pin").value;
     
-    VidyoPlugin.connect([portal, roomKey, displayName, pin]);
+    VidyoPlugin.connect([portal, roomKey, displayName, pin, 8 /* max visible participants */, "debug@VidyoClient info@VidyoConnector warning" /* debug log level */]);
 }
 
 /*
