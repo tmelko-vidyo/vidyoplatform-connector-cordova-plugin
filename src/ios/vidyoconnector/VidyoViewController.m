@@ -59,6 +59,7 @@
 
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
     
+    isPlatform          = [standardUserDefaults  boolForKey:@"isPlatform"];
     portal.text         = [standardUserDefaults  stringForKey:@"portal"];
     roomKey.text        = [standardUserDefaults  stringForKey:@"roomKey"];
     displayName.text    = [standardUserDefaults  stringForKey:@"displayName"];
@@ -503,12 +504,26 @@
     } else {
         [toolbarStatusText setText:@"Connecting..."];
         
-        BOOL status = [vc connectToRoomAsGuest:
-                       [[[portal text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-                                   DisplayName:[[[displayName text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-                                       RoomKey:[[[roomKey text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-                                       RoomPin:[[[pin text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
-                             ConnectorIConnect:self];
+        BOOL status;
+        if (isPlatform) {
+            status = [vc connectToRoomAsGuest: [[[portal text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                  DisplayName:[[[displayName text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                      RoomKey:[[[roomKey text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                                      RoomPin:[[[pin text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                            ConnectorIConnect:self];
+        } else {
+            NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+
+            NSString *host = [standardUserDefaults stringForKey:@"host"];
+            NSString *token = [standardUserDefaults  stringForKey:@"token"];
+            NSString *resource = [standardUserDefaults  stringForKey:@"resource"];
+                        
+            status = [vc connect:[[host stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                           Token:[[token stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                     DisplayName:[[[displayName text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] UTF8String]
+                     ResourceId:[[resource stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]] UTF8String]
+               ConnectorIConnect:self];
+        }
         
         if (status == NO) {
             [self ConnectorStateUpdated:VC_CONNECTION_FAILURE statusText:@"Connection failed"];

@@ -30,13 +30,25 @@ VidyoPlugin.prototype.setCallback = function(callback) {
 
 /**
  * Launch conference activity and pass the callbacks
- * Arguments:
- * 0: Portal
- * 1: Room Key
- * 2: Display Name
- * 3: Pin
- * 4: Max Participants
- * 5: Log Level
+ * 
+ * Ptatform Arguments:
+ * 0: isPlatform [number] true - 1 | false - 0
+ * 1: Portal [string]
+ * 2: Room Key [string]
+ * 3: Pin [string]
+ * 4: Display Name [string]
+ * 5: Max Participants [number]
+ * 6: Log Level [string]
+ * 
+ * Vidyo.io Arguments:
+ * 0: isPlatform [number] true - 1 | false - 0
+ * 1: Host [string]
+ * 2: Token [string]
+ * 3: Resource [string]
+ * 4: Display Name [string]
+ * 5: Max Participants [number]
+ * 6: Log Level [string]
+ * 
  */
 VidyoPlugin.prototype.connect = function(args) {
     exec(nativeResponseCallback, nativeErrorCallback, "VidyoPlugin", "connect", args);

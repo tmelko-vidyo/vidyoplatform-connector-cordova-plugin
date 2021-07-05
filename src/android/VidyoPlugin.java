@@ -30,8 +30,8 @@ public class VidyoPlugin extends CordovaPlugin {
   private static final int PERMISSION_REQ_CODE = 0x7b;
 
   private static final String[] PERMISSIONS = new String[]{
-    Manifest.permission.CAMERA,
-    Manifest.permission.RECORD_AUDIO
+          Manifest.permission.CAMERA,
+          Manifest.permission.RECORD_AUDIO
   };
 
   private JSONArray connectArguments;
@@ -112,12 +112,23 @@ public class VidyoPlugin extends CordovaPlugin {
     }
 
     Intent intent = new Intent(context, VidyoActivity.class);
-    intent.putExtra("portal", args.getString(0));
-    intent.putExtra("roomKey", args.getString(1));
-    intent.putExtra("displayName", args.getString(2));
-    intent.putExtra("pin", args.getString(3));
-    intent.putExtra("participants", args.getInt(4));
-    intent.putExtra("logLevel", args.getString(5));
+
+	boolean isPlatform = args.getInt(0) == 1;
+    intent.putExtra("isPlatform", isPlatform);
+
+    if (isPlatform) {
+      intent.putExtra("portal", args.getString(1));
+      intent.putExtra("roomKey", args.getString(2));
+      intent.putExtra("pin", args.getString(3));
+    } else {
+      intent.putExtra("host", args.getString(1));
+      intent.putExtra("token", args.getString(2));
+      intent.putExtra("resource", args.getString(3));
+    }
+
+    intent.putExtra("displayName", args.getString(4));
+    intent.putExtra("participants", args.getInt(5));
+    intent.putExtra("logLevel", args.getString(6));
 
     this.cordova.getActivity().startActivity(intent);
   }

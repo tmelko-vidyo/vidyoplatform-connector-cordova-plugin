@@ -1,18 +1,11 @@
 package com.vidyo.vidyoconnector;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.vidyo.platform.connector.BuildConfig;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import io.ionic.starter.BuildConfig;
 
 public class Logger {
 

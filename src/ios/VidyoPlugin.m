@@ -57,37 +57,24 @@
     /* Store command for further reference */
     pluginCommand = command;
     
-    NSString* portal = [command.arguments objectAtIndex:0];
-    NSString* roomKey = [command.arguments objectAtIndex:1];
-    NSString* displayName = [command.arguments objectAtIndex:2];
-    NSString* pin = [command.arguments objectAtIndex:3];
-    
-    NSNumber* maxParticipants = [command.arguments objectAtIndex:4];
-    NSString* logLevel = [command.arguments objectAtIndex:5];
-
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
     
-    if (portal != nil) {
-        [standardUserDefaults setObject:portal forKey:@"portal"];
+    BOOL isPlatform = [(NSNumber*)[command.arguments objectAtIndex:0] intValue] == 1;
+    [standardUserDefaults setBool:isPlatform forKey:@"isPlatform"];
+
+    if (isPlatform) {
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:1] forKey:@"portal"];
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:2] forKey:@"roomKey"];
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:3] forKey:@"pin"];
+    } else {
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:1] forKey:@"host"];
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:2] forKey:@"token"];
+        [standardUserDefaults setObject:[command.arguments objectAtIndex:3] forKey:@"resource"];
     }
     
-    if (roomKey != nil) {
-        [standardUserDefaults setObject:roomKey forKey:@"roomKey"];
-    }
-    
-    if (displayName != nil) {
-        [standardUserDefaults setObject:displayName forKey:@"displayName"];
-    }
-    
-    if (pin != nil) {
-        [standardUserDefaults setObject:pin forKey:@"pin"];
-    }
-    
-    [standardUserDefaults setInteger:[maxParticipants intValue] forKey: @"participants"];
-    
-    if (logLevel != nil) {
-        [standardUserDefaults setObject:logLevel forKey:@"logLevel"];
-    }
+    [standardUserDefaults setObject:[command.arguments objectAtIndex:4] forKey:@"displayName"];
+    [standardUserDefaults setInteger:[[command.arguments objectAtIndex:5] intValue] forKey: @"participants"];
+    [standardUserDefaults setObject:[command.arguments objectAtIndex:6] forKey:@"logLevel"];
     
     [standardUserDefaults setBool:YES forKey:@"autoJoin"];
     [standardUserDefaults setBool:YES forKey:@"hideConfig"];

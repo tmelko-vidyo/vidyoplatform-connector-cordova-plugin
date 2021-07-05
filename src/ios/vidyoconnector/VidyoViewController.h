@@ -28,6 +28,7 @@ enum VIDYO_CONNECTOR_STATE {
     BOOL      microphonePrivacy;
     BOOL      cameraPrivacy;
     BOOL      devicesSelected;
+    BOOL      isPlatform;
     BOOL      hideConfig;
     BOOL      autoJoin;
     BOOL      allowReconnect;

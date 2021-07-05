@@ -16,6 +16,7 @@ import android.widget.ToggleButton;
 import com.vidyo.VidyoClient.Connector.Connector;
 import com.vidyo.VidyoClient.Connector.ConnectorPkg;
 import com.vidyo.VidyoClient.Endpoint.Participant;
+import com.vidyo.platform.connector.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,11 +27,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.vidyo._package.name.R;
-
 public class VidyoActivity extends Activity implements Connector.IConnect,
-  Connector.IRegisterParticipantEventListener,
-  ViewTreeObserver.OnGlobalLayoutListener {
+        Connector.IRegisterParticipantEventListener,
+        ViewTreeObserver.OnGlobalLayoutListener {
 
   enum VidyoInternalState {
     VC_CONNECTED,
@@ -91,18 +90,18 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
 
     int maxParticipants = intent.getIntExtra("participants", 8);
     String logLevel = intent.hasExtra("logLevel")
-      ? intent.getStringExtra("logLevel")
-      : "debug@VidyoClient info@VidyoConnector warning";
+            ? intent.getStringExtra("logLevel")
+            : "debug@VidyoClient info@VidyoConnector warning";
 
     Logger.d("Construct connector with ext data. Max part.: %s, Log level: %s",
-      maxParticipants, logLevel);
+            maxParticipants, logLevel);
 
     mVidyoConnector = new Connector(mVideoFrame,
-      Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default,
-      maxParticipants,
-      logLevel,
-      Logger.configLogFile(getApplicationContext()),
-      0);
+            Connector.ConnectorViewStyle.VIDYO_CONNECTORVIEWSTYLE_Default,
+            maxParticipants,
+            logLevel,
+            Logger.configLogFile(getApplicationContext()),
+            0);
 
     Logger.i("Version is " + mVidyoConnector.getVersion());
 
@@ -114,11 +113,22 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
       viewTreeObserver.addOnGlobalLayoutListener(this);
     }
 
-    // If the app was launched by a different app, then get any parameters; otherwise use default settings
-    connectData = new ConnectData(intent.hasExtra("portal") ? intent.getStringExtra("portal") : "*.vidyocloud.com",
-      intent.hasExtra("roomKey") ? intent.getStringExtra("roomKey") : "",
-      intent.hasExtra("pin") ? intent.getStringExtra("pin") : "",
-      intent.hasExtra("displayName") ? intent.getStringExtra("displayName") : "");
+    connectData = new ConnectData();
+
+    boolean isPlatform = intent.hasExtra("isPlatform") && intent.getBooleanExtra("isPlatform", false);
+    String displayName = intent.hasExtra("displayName") ? intent.getStringExtra("displayName") : "";
+
+    if (isPlatform) {
+      connectData.populatePlatform(intent.hasExtra("portal") ? intent.getStringExtra("portal") : "*.vidyocloud.com",
+              intent.hasExtra("roomKey") ? intent.getStringExtra("roomKey") : "",
+              intent.hasExtra("pin") ? intent.getStringExtra("pin") : "",
+              displayName);
+    } else {
+      connectData.populateIO(intent.hasExtra("host") ? intent.getStringExtra("host") : "prod.vidyo.io",
+              intent.hasExtra("token") ? intent.getStringExtra("token") : "",
+              intent.hasExtra("resource") ? intent.getStringExtra("resource") : "",
+              displayName);
+    }
 
     mToggleConnectButton.setEnabled(true);
   }
@@ -316,9 +326,9 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
     Connector.ConnectorState state = mVidyoConnector.getState();
 
     if (state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_ConnectingToResource
-      || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_FindingResource
-      || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_EnablingMedia
-      || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_EstablishingConnection) {
+            || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_FindingResource
+            || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_EnablingMedia
+            || state == Connector.ConnectorState.VIDYO_CONNECTORSTATE_EstablishingConnection) {
       Logger.w("Attempted to interrupt the connection during active process.");
       return;
     }
@@ -326,12 +336,9 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
     if (mToggleConnectButton.isChecked()) {
       mToolbarStatus.setText("Connecting...");
 
-      final boolean status = mVidyoConnector.connectToRoomAsGuest(
-        connectData.portal,
-        connectData.displayName,
-        connectData.room,
-        connectData.pin,
-        this);
+      final boolean status = connectData.isPlatform
+              ? mVidyoConnector.connectToRoomAsGuest(connectData.portal, connectData.displayName, connectData.room, connectData.pin, this)
+              : mVidyoConnector.connect(connectData.host, connectData.token, connectData.displayName, connectData.resource, this);
 
       if (!status) {
         ConnectorStateUpdated(VidyoInternalState.VC_CONNECTION_FAILURE, "Connection failed");
@@ -436,13 +443,13 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
   @Override
   public void onParticipantJoined(Participant participant) {
     EventBus.getDefault().post(EventAction.report(EventAction.PARTICIPANT_JOINED,
-      participantToJSON(participant)));
+            participantToJSON(participant)));
   }
 
   @Override
   public void onParticipantLeft(Participant participant) {
     EventBus.getDefault().post(EventAction.report(EventAction.PARTICIPANT_LEFT,
-      participantToJSON(participant)));
+            participantToJSON(participant)));
   }
 
   @Override
