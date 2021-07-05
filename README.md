@@ -173,7 +173,7 @@ function connect() {
     /* Pass the callback to the native side */
     VidyoPlugin.setCallback(onVidyoEvent);
     
-    const isPlatform = true;
+    const isPlatform = 1; // true
     
     var portal = document.getElementById("portal").value;
     var roomKey = document.getElementById("roomKey").value;
@@ -189,7 +189,7 @@ function connectIO() {
     /* Pass the callback to the native side */
     VidyoPlugin.setCallback(onVidyoEvent);
     
-    const isPlatform = false;
+    const isPlatform = 0; // false
     
     var host = "prod.vidyo.io";
     var token = "generated-token";
