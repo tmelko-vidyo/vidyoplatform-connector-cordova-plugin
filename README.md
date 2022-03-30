@@ -1,4 +1,4 @@
-# vidyoplatform-connector-cordova
+# VidyoPlatform Connector Plugin for Cordova 
 
 This is a VidyoPlatform Android and iOS plugin for Cordova. 
 
