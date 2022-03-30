@@ -40,6 +40,21 @@ Here we demontrate how to create a sample Cordova project and import the VidyoPl
 This step copies all the relevant files from the plugin folder to the Cordova project folder. It also merges the information related to permissions in to the AndroidManifest.xml. This step should complete without any errors.
 
 ### Make changes to Cordova application UI
+
+#### Important change for Android
+
+Go to config.xml file of the Cordova App and those lines:
+
+```
+<platform name="android">
+        <preference name="GradlePluginKotlinEnabled" value="true" />
+        <preference name="GradlePluginKotlinCodeStyle" value="official" />
+        <preference name="GradlePluginKotlinVersion" value="1.4.10" />
+    </platform>
+```
+
+Enable Kotlin plugin since VidyoClient now depends on it.
+
 Cordova application's main page is rendered using an html file - VidyoPlatformConnector/www/index.html. Now we add a button to this html page. Clicking this button will launch the native Vidyo conference activity. We also add text boxed to collect the information like vidyo portal, room key, display name and pin if.
 
 ```
