@@ -47,6 +47,8 @@ Go to config.xml file of the Cordova App and those lines:
 
 ```
 <platform name="android">
+        <preference name="android-minSdkVersion" value="23" />
+
         <preference name="GradlePluginKotlinEnabled" value="true" />
         <preference name="GradlePluginKotlinCodeStyle" value="official" />
         <preference name="GradlePluginKotlinVersion" value="1.4.10" />
@@ -54,6 +56,7 @@ Go to config.xml file of the Cordova App and those lines:
 ```
 
 Enable Kotlin plugin since VidyoClient now depends on it.
+Bump min SDK version to 23
 
 Cordova application's main page is rendered using an html file - VidyoPlatformConnector/www/index.html. Now we add a button to this html page. Clicking this button will launch the native Vidyo conference activity. We also add text boxed to collect the information like vidyo portal, room key, display name and pin if.
 
