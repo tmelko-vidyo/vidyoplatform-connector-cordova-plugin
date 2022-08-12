@@ -39,6 +39,7 @@ VidyoPlugin.prototype.setCallback = function(callback) {
  * 4: Display Name [string]
  * 5: Max Participants [number]
  * 6: Log Level [string]
+ * 7: Auto Join [number] true - 1 | false - 0
  * 
  * Vidyo.io Arguments:
  * 0: isPlatform [number] true - 1 | false - 0
@@ -48,6 +49,7 @@ VidyoPlugin.prototype.setCallback = function(callback) {
  * 4: Display Name [string]
  * 5: Max Participants [number]
  * 6: Log Level [string]
+ * 7: Auto Join [number] true - 1 | false - 0
  * 
  */
 VidyoPlugin.prototype.connect = function(args) {

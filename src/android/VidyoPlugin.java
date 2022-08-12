@@ -113,7 +113,7 @@ public class VidyoPlugin extends CordovaPlugin {
 
     Intent intent = new Intent(context, VidyoActivity.class);
 
-	boolean isPlatform = args.getInt(0) == 1;
+	  boolean isPlatform = args.getInt(0) == 1;
     intent.putExtra("isPlatform", isPlatform);
 
     if (isPlatform) {
@@ -129,6 +129,9 @@ public class VidyoPlugin extends CordovaPlugin {
     intent.putExtra("displayName", args.getString(4));
     intent.putExtra("participants", args.getInt(5));
     intent.putExtra("logLevel", args.getString(6));
+
+    boolean autoJoin = args.getInt(7) == 1;
+    intent.putExtra("autoJoin", autoJoin);
 
     this.cordova.getActivity().startActivity(intent);
   }

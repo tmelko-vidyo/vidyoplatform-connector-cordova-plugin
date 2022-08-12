@@ -132,6 +132,11 @@ public class VidyoActivity extends Activity implements Connector.IConnect,
     }
 
     mToggleConnectButton.setEnabled(true);
+
+    boolean autoJoin = intent.hasExtra("autoJoin") && intent.getBooleanExtra("autoJoin", false);
+    if (autoJoin && mVidyoConnectorState == VidyoInternalState.VC_DISCONNECTED) {
+      mToggleConnectButton.postDelayed(() -> mToggleConnectButton.performClick(), 500);
+    }
   }
 
   @Override
