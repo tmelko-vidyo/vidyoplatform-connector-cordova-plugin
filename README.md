@@ -193,14 +193,23 @@ function connect() {
     VidyoPlugin.setCallback(onVidyoEvent);
     
     const isPlatform = 1; // true
-    
+    const autoJoin = 1; // true
+    const maxParticipants = 8;  
+
     var portal = document.getElementById("portal").value;
     var roomKey = document.getElementById("roomKey").value;
     var pin = document.getElementById("pin").value;
 
     var displayName = document.getElementById("displayName").value;  
     
-    VidyoPlugin.connect([isPlatform, portal, roomKey, pin, displayName, 8 /* max visible participants */, "debug@VidyoClient info@VidyoConnector warning" /* debug log level */]);
+    VidyoPlugin.connect([isPlatform, 
+                        portal, 
+                        roomKey, 
+                        pin, 
+                        displayName, 
+                        maxParticipants /* max visible participants */, 
+                        "debug@VidyoClient info@VidyoConnector warning" /* debug log level */,
+                        autoJoin]);
 }
 
 /* Call this methond in order to connect with Vidyo.io */
@@ -209,14 +218,23 @@ function connectIO() {
     VidyoPlugin.setCallback(onVidyoEvent);
     
     const isPlatform = 0; // false
+    const autoJoin = 1; // true
+    const maxParticipants = 8; 
     
     var host = "prod.vidyo.io";
     var token = "generated-token";
     var resource = "demoRoom";
 
-    var displayName = "display-name";  
+    var displayName = "display-name";
     
-    VidyoPlugin.connect([isPlatform, host, token, resource, displayName, 8 /* max visible participants */, "debug@VidyoClient info@VidyoConnector warning" /* debug log level */]);
+    VidyoPlugin.connect([isPlatform, 
+                        host, 
+                        token, 
+                        resource, 
+                        displayName, 
+                        maxParticipants /* max visible participants */, 
+                        "debug@VidyoClient info@VidyoConnector warning" /* debug log level */,
+                        autoJoin /* auto join */]);
 }
 
 /*
