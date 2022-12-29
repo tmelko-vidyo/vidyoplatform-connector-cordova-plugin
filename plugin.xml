@@ -119,7 +119,7 @@
 		<framework src="CoreMedia.framework"/>
 		<framework src="SystemConfiguration.framework"/>
 		<framework src="UIKit.framework"/>
-        <framework src="libc++.dylib" />
+		<framework src="Photos.framework"/>
 
         <!-- Should be localted in this folder ahead -->
         <framework src="src/ios/VidyoClientIOS.xcframework" custom="true" />
