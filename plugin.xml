@@ -122,8 +122,7 @@
         <framework src="libc++.dylib" />
 
         <!-- Should be localted in this folder ahead -->
-        <framework src="src/ios/VidyoClientIOS.framework" custom="true" />
-        <framework src="src/ios/Banuba/BNBEffectPlayerC.xcframework" custom="true" />
+        <framework src="src/ios/VidyoClientIOS.xcframework" custom="true" />
 
 		<header-file src="src/ios/vidyoconnector/Logger.h" />
         <source-file src="src/ios/vidyoconnector/Logger.m" />
